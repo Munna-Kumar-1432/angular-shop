@@ -1,0 +1,51 @@
+// Smooth transitions for buttons
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+// Hover effect for product images
+img {
+  transition: transform 0.3s ease-in-out;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// Custom scrollbar for cart items
+.cart-items {
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f7fafc;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;
+    border-radius: 3px;
+  }
+}
+
+// Animation for quantity changes
+.quantity-change {
+  animation: pulse 0.3s ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+} 

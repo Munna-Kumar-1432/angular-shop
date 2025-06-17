@@ -1,0 +1,191 @@
+<div class="container mx-auto px-4 py-8">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center min-h-[400px]">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="text-center py-8">
+    <p class="text-red-500 mb-4">{{ error }}</p>
+    <button *ngIf="product" (click)="loadProduct(product!.id)" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Product Details -->
+  <div *ngIf="!loading && !error && product" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Product Images -->
+    <div class="space-y-4">
+      <div class="aspect-square rounded-lg overflow-hidden bg-gray-100">
+        <img [src]="selectedImage" [alt]="product.title" class="w-full h-full object-contain">
+      </div>
+      <div class="grid grid-cols-4 gap-2">
+        <div *ngFor="let image of product.images" 
+             (click)="changeImage(image)"
+             class="aspect-square rounded-lg overflow-hidden bg-gray-100 cursor-pointer hover:opacity-75"
+             [class.border-2]="selectedImage === image"
+             [class.border-blue-500]="selectedImage === image">
+          <img [src]="image" [alt]="product.title" class="w-full h-full object-contain">
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="space-y-6">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">{{ product.title }}</h1>
+        <p class="text-gray-500 mt-2">{{ product.brand }}</p>
+      </div>
+
+      <!-- Rating -->
+      <div class="flex items-center">
+        <div class="flex items-center">
+          <span class="text-yellow-400">★</span>
+          <span class="ml-1 text-gray-600">{{ averageRating > 0 ? averageRating.toFixed(1) : 'No ratings yet' }}</span>
+        </div>
+        <span class="mx-2 text-gray-300">|</span>
+        <span class="text-gray-600">{{ product.stock }} in stock</span>
+      </div>
+
+      <!-- Price -->
+      <div class="space-y-2">
+        <div class="flex items-baseline">
+          <span class="text-3xl font-bold text-gray-900">${{ getDiscountedPrice() | number:'1.2-2' }}</span>
+          <span *ngIf="product.discountPercentage" class="ml-2 text-sm text-gray-500 line-through">
+            ${{ product.price | number:'1.2-2' }}
+          </span>
+        </div>
+        <p *ngIf="product.discountPercentage" class="text-green-600">
+          {{ product.discountPercentage }}% off
+        </p>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">Description</h2>
+        <p class="mt-2 text-gray-600">{{ product.description }}</p>
+      </div>
+
+      <!-- Stock Status -->
+      <div class="flex items-center">
+        <span class="text-sm" [class.text-green-600]="product.stock > 0" [class.text-red-600]="product.stock === 0">
+          {{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }}
+        </span>
+      </div>
+
+      <!-- Cart Quantity -->
+      <div *ngIf="cartQuantity > 0" class="bg-blue-50 p-4 rounded-lg">
+        <p class="text-blue-800">
+          {{ cartQuantity }} {{ cartQuantity === 1 ? 'item' : 'items' }} in cart
+        </p>
+      </div>
+
+      <!-- Quantity Selector -->
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center border rounded-lg">
+          <button (click)="decreaseQuantity()" 
+                  class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-l-lg"
+                  [disabled]="quantity <= 1">
+            -
+          </button>
+          <span class="px-4 py-1 text-gray-900">{{ quantity }}</span>
+          <button (click)="increaseQuantity()" 
+                  class="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-r-lg"
+                  [disabled]="quantity >= product.stock">
+            +
+          </button>
+        </div>
+        <button (click)="updateCart()"
+                class="mt-6 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Add to cart
+        </button>
+      </div>
+
+      <!-- Additional Info -->
+      <div class="border-t pt-6">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <h3 class="text-sm font-medium text-gray-500">Category</h3>
+            <p class="mt-1 text-sm text-gray-900">{{ product.category }}</p>
+          </div>
+          <div>
+            <h3 class="text-sm font-medium text-gray-500">Brand</h3>
+            <p class="mt-1 text-sm text-gray-900">{{ product.brand }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Submission Form -->
+      <div class="mt-12 bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Leave a Review</h2>
+
+        <div *ngIf="!isLoggedIn" class="text-center py-4 text-gray-600">
+          <p class="mb-2">Please <a routerLink="/login" class="text-indigo-600 hover:underline">log in</a> to submit a review.</p>
+        </div>
+
+        <form *ngIf="isLoggedIn && !userReview" [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Your Rating</label>
+            <div class="flex items-center mt-1">
+              <span *ngFor="let star of [1,2,3,4,5]" 
+                    (click)="setRating(star)"
+                    class="cursor-pointer text-3xl transition-colors duration-200"
+                    [class.text-yellow-400]="star <= currentRating"
+                    [class.text-gray-300]="star > currentRating">★</span>
+            </div>
+            <div *ngIf="reviewForm.get('rating')?.invalid && reviewForm.get('rating')?.touched" class="text-red-500 text-xs mt-1">
+              Please select a rating.
+            </div>
+          </div>
+
+          <div>
+            <label for="comment" class="block text-sm font-medium text-gray-700">Your Comment</label>
+            <textarea id="comment" formControlName="comment" rows="4"
+                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-2"
+                      [class.border-red-500]="reviewForm.get('comment')?.invalid && reviewForm.get('comment')?.touched"></textarea>
+            <div *ngIf="reviewForm.get('comment')?.invalid && reviewForm.get('comment')?.touched" class="text-red-500 text-xs mt-1">
+              Comment is required (max 500 characters).
+            </div>
+          </div>
+
+          <button type="submit" [disabled]="reviewForm.invalid" 
+                  class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-md font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 ease-in-out">
+            Submit Review
+          </button>
+        </form>
+
+        <div *ngIf="isLoggedIn && userReview" class="text-center py-4 text-gray-600">
+          <p class="mb-2 font-semibold">You have already submitted a review for this product.</p>
+          <p>Your rating: <span class="text-yellow-400">{{ userReview.rating }} ★</span></p>
+          <p class="text-sm text-gray-500">"{{ userReview.comment }}"</p>
+        </div>
+      </div>
+
+      <!-- Existing Reviews Section -->
+      <div class="mt-12 bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Customer Reviews ({{ reviews.length }})</h2>
+
+        <div *ngIf="reviews.length === 0" class="text-gray-600 text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+          <p class="text-xl font-semibold mb-2">No reviews yet.</p>
+          <p>Be the first to share your experience with this product!</p>
+        </div>
+
+        <div *ngIf="reviews.length > 0" class="space-y-6">
+          <div *ngFor="let review of reviews" class="border-b border-gray-200 pb-4 last:border-b-0 last:pb-0">
+            <div class="flex items-center mb-2">
+              <p class="font-semibold text-gray-800 mr-2">{{ review.userName }}</p>
+              <div class="flex items-center">
+                <span *ngFor="let star of [1,2,3,4,5]" 
+                      class="text-sm"
+                      [class.text-yellow-400]="star <= review.rating"
+                      [class.text-gray-300]="star > review.rating">★</span>
+              </div>
+              <span class="ml-3 text-sm text-gray-500">{{ review.date | date:'mediumDate' }}</span>
+            </div>
+            <p class="text-gray-700">{{ review.comment }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

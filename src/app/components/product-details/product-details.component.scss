@@ -1,0 +1,56 @@
+// Custom styles for product details component
+.aspect-w-1 {
+  position: relative;
+  padding-bottom: 100%;
+}
+
+.aspect-w-1 > * {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+// Smooth transitions for image gallery
+img {
+  transition: transform 0.3s ease-in-out;
+}
+
+button:hover img {
+  transform: scale(1.05);
+}
+
+// Custom scrollbar for description
+.text-gray-600 {
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f7fafc;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;
+    border-radius: 3px;
+  }
+}
+
+// Animation for loading spinner
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+} 

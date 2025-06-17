@@ -1,0 +1,79 @@
+<div class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-4xl font-extrabold text-gray-900 text-center mb-10">User Profile</h1>
+
+    <div *ngIf="loading" class="text-center text-gray-600 text-lg">Loading profile and orders...</div>
+    <div *ngIf="error" class="text-center text-red-600 text-lg mb-4">{{ error }}</div>
+
+    <ng-container *ngIf="!loading && !error">
+      <!-- User Information Section -->
+      <div *ngIf="currentUser" class="bg-white rounded-xl shadow-lg p-8 mb-10 flex items-center space-x-6">
+        <img [src]="currentUser.avatar || 'https://ui-avatars.com/api/?name=Guest&background=random'" 
+             [alt]="currentUser.name || 'Guest'" 
+             class="w-24 h-24 rounded-full object-cover border-4 border-indigo-200 shadow-md">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900">{{ currentUser.name }}</h2>
+          <p class="text-lg text-gray-600">{{ currentUser.email }}</p>
+          <p class="text-md text-gray-500 mt-2">Member since: {{ (currentUser.id | date:'mediumDate') || 'N/A' }}</p>
+          <!-- You can add more user details here -->
+        </div>
+      </div>
+
+      <!-- Order History Section -->
+      <div class="bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Order History</h2>
+
+        <div *ngIf="userOrders.length === 0" class="text-gray-600 text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+          <p class="text-xl font-semibold mb-2">No orders found.</p>
+          <p>It looks like you haven't placed any orders yet. Start shopping!</p>
+          <a routerLink="/products" class="mt-4 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Browse Products
+          </a>
+        </div>
+
+        <div *ngIf="userOrders.length > 0" class="space-y-8">
+          <div *ngFor="let order of userOrders; trackBy: trackOrderBy" class="border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <h3 class="text-xl font-semibold text-gray-800">Order #{{ order.id }}</h3>
+                <p class="text-sm text-gray-500">Placed on: {{ order.orderDate | date:'medium' }}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-lg font-bold text-indigo-600">Total: ${{ order.total.toFixed(2) }}</p>
+                <span class="px-3 py-1 text-sm font-semibold rounded-full "
+                      [class.bg-green-100]="order.status === 'Completed'"
+                      [class.text-green-800]="order.status === 'Completed'"
+                      [class.bg-yellow-100]="order.status === 'Pending'"
+                      [class.text-yellow-800]="order.status === 'Pending'"
+                      [class.bg-red-100]="order.status === 'Cancelled'"
+                      [class.text-red-800]="order.status === 'Cancelled'">
+                  {{ order.status }}
+                </span>
+              </div>
+            </div>
+
+            <div class="border-t border-gray-200 pt-4 mt-4">
+              <h4 class="text-md font-semibold text-gray-700 mb-3">Items in this order:</h4>
+              <ul class="space-y-3">
+                <li *ngFor="let item of order.items" class="flex items-start space-x-4">
+                  <img [src]="item.thumbnail" [alt]="item.title" class="w-16 h-16 object-cover rounded-md shadow-sm">
+                  <div class="flex-1">
+                    <p class="font-medium text-gray-800">{{ item.title }}</p>
+                    <p class="text-sm text-gray-600">Quantity: {{ item.quantity }}</p>
+                    <p class="text-sm text-indigo-500">${{ item.price.toFixed(2) }} each</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="border-t border-gray-200 pt-4 mt-4 text-sm text-gray-600">
+              <h4 class="font-semibold mb-2">Shipping Address:</h4>
+              <p>{{ order.shippingAddress.address }}</p>
+              <p>{{ order.shippingAddress.city }}, {{ order.shippingAddress.state }} {{ order.shippingAddress.zipCode }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

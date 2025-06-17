@@ -1,0 +1,93 @@
+<!-- Deals Page -->
+<div class="min-h-screen bg-gray-50">
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-r from-indigo-600 to-purple-700 text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4 animate-fade-in-down">
+          Exclusive Deals & Offers
+        </h1>
+        <p class="text-xl md:text-2xl opacity-90 mb-8 animate-fade-in-up">
+          Discover amazing discounts across all categories
+        </p>
+      </div>
+    </div>
+    <div class="absolute inset-0 bg-black opacity-20"></div>
+  </section>
+
+  <!-- Featured Deal -->
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform transition duration-300 hover:shadow-2xl">
+        <div class="p-8">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-3xl font-bold text-gray-900">Flash Sale</h2>
+              <p class="text-gray-600 mt-2">Limited time offers on selected items</p>
+            </div>
+            <span class="bg-red-500 text-white px-4 py-2 rounded-full text-sm font-medium animate-pulse">
+              Ends Soon
+            </span>
+          </div>
+          <div class="flex justify-center">
+            <a routerLink="/products" 
+               class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition duration-300 transform hover:scale-105">
+              Shop Now
+              <svg class="ml-2 -mr-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Deals -->
+  <section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Deals by Category</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div *ngFor="let category of categories" 
+             class="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl">
+          <div class="relative">
+            <img [src]="getCategoryImagePath(category)" 
+                 [alt]="category.name" 
+                 class="w-full h-48 object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+            <div class="absolute bottom-4 left-4">
+              <h3 class="text-xl font-bold text-white">{{ category.name }}</h3>
+              <span class="text-white/90 text-sm">Special Offers</span>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-600 mb-4">Discover exclusive deals on {{ category.name }} products</p>
+            <a [routerLink]="['/products']" [queryParams]="{ category: category.slug }"
+               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition duration-300">
+              View Deals
+              <svg class="ml-2 -mr-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="py-12 bg-indigo-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold text-white mb-4">Never Miss a Deal</h2>
+      <p class="text-indigo-100 mb-8">Subscribe to our newsletter for exclusive offers and early access to sales</p>
+      <form class="max-w-md mx-auto flex gap-4">
+        <input type="email" placeholder="Enter your email" 
+               class="flex-1 px-4 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-white">
+        <button type="submit" 
+                class="px-6 py-3 bg-white text-indigo-600 font-medium rounded-full hover:bg-gray-100 transition duration-300">
+          Subscribe
+        </button>
+      </form>
+    </div>
+  </section>
+</div>

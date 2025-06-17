@@ -1,0 +1,45 @@
+// Custom hover effects for navigation links
+.nav-link {
+  position: relative;
+  transition: all 0.3s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #4f46e5; // indigo-600
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+// Custom animation for mobile menu
+.mobile-menu {
+  transition: all 0.3s ease-in-out;
+  transform-origin: top;
+  
+  &.hidden {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+}
+
+// Custom shadow effect for the navbar
+nav {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+// Custom hover effect for icons
+button {
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+}
